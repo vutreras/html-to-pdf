@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+
+<project name="html-to-pdf" default="usage" basedir=".">
+
+	<property file="project.properties"/>
+
+	<path id="all-libs">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+	</path>
+
+	<tstamp>
+	    <format property="build.date" pattern="yyyyMMdd" locale="es, cl"/>
+	</tstamp>
+
+	<target name="usage">
+	    <echo message="------------------------------------------------------"/>
+		<echo message="${prj-name}"/>
+		<echo message="------------------------------------------------------"/>
+		<echo message="clean   	--> limpia el proyecto"/>
+		<echo message="jar    	--> crea un jar del proyecto"/>
+		<echo message="jar-fat  --> crea un jar fat del proyecto"/>	
+		<echo message="------------------------------------------------------"/>
+	</target>
+	
+	<target name="clean">
+		<delete dir="${target.classes.dir}"/>
+		<delete dir="${target.dir}"/>
+	</target>
+	
+	<target name="compile">
+	
+		<mkdir dir="${target.classes.dir}"/>
+		<mkdir dir="${target.classes.dir}/META-INF"/>
+		
+		<javac destdir="${target.classes.dir}" source="1.6" target="1.6" deprecation="false" optimize="false" failonerror="true" includeantruntime="false">
+			<src path="${src.dir}"/>
+			<classpath refid="all-libs"/>
+		</javac>
+		
+		<copy todir="${target.classes.dir}" preservelastmodified="true">
+			<fileset dir="${src.dir}">
+				<include name="**/*.properties"/>
+			</fileset>
+		</copy>
+		
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar jarfile="${prj-name}.jar" basedir="${target.classes.dir}">
+			<manifest>
+				<attribute name="Implementation-Title" value="${prj-name}"/>
+				<attribute name="Implementation-Version" value="${prj-version}"/>
+				<attribute name="Main-Class" value="cl.continuum.htmltopdf.MainHtmlToPdf" />
+				<attribute name="Class-Path" value="./lib/commons-io-1.3.1.jar ./lib/commons-lang-2.1.jar ./lib/commons-cli-1.2.jar ./lib/core-renderer.jar ./lib/iText-2.0.8.jar ./lib/jsoup-1.7.3.jar ./lib/xml-apis-xerces-2.9.1.jar" />          
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="jar-fat" depends="compile">
+		<jar jarfile="${prj-name}_fat.jar" basedir="${target.classes.dir}">
+		    <zipgroupfileset dir="${lib.dir}" includes="*.jar" excludes="META-INF/**/*"/>
+			<manifest>
+				<attribute name="Implementation-Title" value="${prj-name}"/>
+				<attribute name="Implementation-Version" value="${prj-version}"/>
+				<attribute name="Main-Class" value="cl.continuum.htmltopdf.MainHtmlToPdf" />          
+			</manifest>
+		</jar>
+	</target>
+	
+</project>
