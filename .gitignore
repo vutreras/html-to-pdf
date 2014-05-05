@@ -3,4 +3,5 @@ bin
 .settings
 *.pdf
 .DS_Store
+html_debug.html
 

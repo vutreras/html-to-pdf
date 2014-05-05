@@ -2,6 +2,7 @@ package cl.continuum.htmltopdf;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -32,8 +33,8 @@ public class HtmlToPdf {
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	public static void convert(File inputHtml, File inputCss, OutputStream outputPdf, boolean cleanHTML) throws IOException, DocumentException {
-		convert(new FileInputStream(inputHtml), new FileInputStream(inputCss), outputPdf, cleanHTML);
+	public static void convert(File inputHtml, File inputCss, OutputStream outputPdf, boolean cleanHTML, boolean debugHtml) throws IOException, DocumentException {
+		convert(new FileInputStream(inputHtml), new FileInputStream(inputCss), outputPdf, cleanHTML, debugHtml);
 	}
 	
 	/**
@@ -45,10 +46,10 @@ public class HtmlToPdf {
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	public static void convert(InputStream inputHtml, InputStream inputCss, OutputStream outputPdf, boolean cleanHTML) throws IOException, DocumentException {
+	public static void convert(InputStream inputHtml, InputStream inputCss, OutputStream outputPdf, boolean cleanHTML, boolean debugHtml) throws IOException, DocumentException {
 		String css = IOUtils.toString(inputCss);
 		String html = IOUtils.toString(inputHtml);
-		convert(html, css, outputPdf, cleanHTML);
+		convert(html, css, outputPdf, cleanHTML, debugHtml);
 	}
 	
 	/**
@@ -60,7 +61,7 @@ public class HtmlToPdf {
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	public static void convert(String html, String css, OutputStream outputPdf, boolean cleanHTML) throws IOException, DocumentException {
+	public static void convert(String html, String css, OutputStream outputPdf, boolean cleanHTML, boolean debugHtml) throws IOException, DocumentException {
 		
 		if (cleanHTML) {
 			System.out.println("Limpiando html...");
@@ -87,7 +88,13 @@ public class HtmlToPdf {
 		
 		doc.head().append(css);
 		
-		html = StringEscapeUtils.unescapeHtml(doc.toString()).replaceAll("<h1> <br /> </h1>", "");	
+		html = StringEscapeUtils.unescapeHtml(doc.toString()).replaceAll("<h1> <br /> </h1>", "").replaceAll("&", "&amp;");	
+		
+		if (debugHtml) {
+			File fileDebugHtml = new File("html_debug.html");
+			System.out.println("Creando debug html en: " + fileDebugHtml.getAbsolutePath());
+			IOUtils.write(html, new FileOutputStream(fileDebugHtml));
+		}
 		
 		System.out.println("Creando pdf...");
 		

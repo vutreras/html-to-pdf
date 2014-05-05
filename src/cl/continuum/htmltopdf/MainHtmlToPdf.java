@@ -50,12 +50,17 @@ public class MainHtmlToPdf {
                 .withDescription("Ruta al archivo PDF generado")
                 .isRequired(true)
                 .create("pdffile");
+		
+		Option debugHtml = OptionBuilder
+                .withDescription("Genera un archivo html_debug.html")
+                .create("debughtml");
 
 		options.addOption(htmlFile);
 		options.addOption(htmlText);
 		options.addOption(cssFile);
 		options.addOption(cssText);
 		options.addOption(pdfFile);
+		options.addOption(debugHtml);
 		
 		if (args == null || args.length <= 1) {
 			HelpFormatter formatter = new HelpFormatter();
@@ -88,8 +93,10 @@ public class MainHtmlToPdf {
 				
 				long tiempoInicio = System.currentTimeMillis();
 				
+				boolean debughtml = cmd.hasOption("debughtml");
+				
 				OutputStream outputPdf = new FileOutputStream(pdffile);
-				HtmlToPdf.convert(html, css, outputPdf, true);
+				HtmlToPdf.convert(html, css, outputPdf, true, debughtml);
 				
 				long totalTiempo = System.currentTimeMillis() - tiempoInicio;
 				

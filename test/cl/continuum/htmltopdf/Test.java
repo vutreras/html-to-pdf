@@ -25,6 +25,17 @@ public class Test {
 			e.printStackTrace();
 		}
 		
+		try {
+			File fileHtml = new File("test/119.html");
+			File filePdf = new File("119.pdf");
+			String[] args_ = {"-htmlfile", fileHtml.getAbsolutePath(), "-pdffile", filePdf.getAbsolutePath(), "-debughtml"};
+			System.out.println("----------------------------------");
+			System.out.println("Prueba 2: " + Arrays.asList(args_));
+			MainHtmlToPdf.main(args_);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		//Prueba usando -htmlfile y -cssfile
 		try {
 			File fileHtml = new File("test/documento_prueba.html");
